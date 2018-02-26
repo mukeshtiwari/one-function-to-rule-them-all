@@ -18,7 +18,7 @@
 (str-cat [])
 
 (defn my-interpose [x a-seq]
-  (reduce (fn [acc y] (concat (list y) acc (list x))) (list x) a-seq))
+  (reduce (fn [acc y] (concat acc (list x) (list y))) (list (first a-seq)) (rest a-seq)))
 
 (my-interpose 0 [1 2 3])               ;=> (1 0 2 0 3)
 (my-interpose "," ["I" "me" "myself"]) ;=> ("I" "," "me" "," "myself")
