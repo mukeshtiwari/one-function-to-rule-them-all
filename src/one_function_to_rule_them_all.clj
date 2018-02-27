@@ -26,13 +26,29 @@
 (my-interpose :a [])                   ;=> ()
 
 (defn my-count [a-seq]
-  :-)
+  (reduce (fn [acc x] (+ acc 1)) 0 a-seq))
+
+(my-count [])      ;=> 0
+(my-count [1 2 3]) ;=> 3
+(my-count [1])     ;=> 1
 
 (defn my-reverse [a-seq]
-  [:-])
+  (reduce (fn [acc x] (cons x acc)) '() a-seq))
+
+(my-reverse [1 2 3]) ;=> (3 2 1)
+(my-reverse [1 2])   ;=> (2 1)
+(my-reverse [])      ;=> ()
 
 (defn min-max-element [a-seq]
-  [:-])
+  (reduce (fn [[accf accs] x]
+            (cond
+              (< x accf) [x accs]
+              (> x accs) [accf x]
+              :else [accf accs])) [(first a-seq) (first a-seq)] a-seq))
+
+(min-max-element [2 7 3 15 4]) ;=> [2 15]
+(min-max-element [1 2 3 4])    ;=> [1 4]
+(min-max-element [1])          ;=> [1 1]
 
 (defn insert [sorted-seq n]
   [:-])
