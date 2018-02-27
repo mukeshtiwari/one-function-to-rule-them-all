@@ -113,8 +113,19 @@
 (filter (pred-and number? integer? pos? even?)
         [1 0 -2 :a 7 "a" 2])                    ;=> (0 2)
 
-(defn my-map [f a-seq]
-  :-)
-(my-map inc [1 2 3 4 5])                  ;=> (2 3 4 5)
+(defn partition-list [& more]
+  (partition (count more) (apply interleave more)))
+
+(partition-list [1 2 3] [ 1 2 3] [1 2 3])
+
+
+(defn my-map [f & more]
+  (cond
+    (= 1 (count more)) (reduce (fn [acc x] (conj acc (f x))) [] (first more))
+    :else (reduce (fn [acc x] (conj acc (apply f x))) [] (apply partition-list more))))
+
+
+
+(my-map inc [1 2 3 4])                  ;=> (2 3 4 5)
 (my-map + [1 1 1] [1 1 1] [1 1 1])      ;=> (3 3 3)
 (my-map vector [1 2 3] [1 2 3] [1 2 3]) ;=> ((1 1 1) (2 2 2) (3 3 3))
