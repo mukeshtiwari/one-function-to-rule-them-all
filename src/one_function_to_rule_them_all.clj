@@ -116,8 +116,9 @@
 (defn partition-list [& more]
   (partition (count more) (apply interleave more)))
 
+(apply interleave [[1 2 3] [1 2 3] [1 2 3]])
 (partition-list [1 2 3] [ 1 2 3] [1 2 3])
-
+(apply partition-list [[1 2 3] [1 2 3] [1 2 3]])
 
 (defn my-map [f & more]
   (cond
