@@ -18,7 +18,8 @@
 (str-cat [])
 
 (defn my-interpose [x a-seq]
-  (reduce (fn [acc y] (concat acc (list x) (list y))) (list (first a-seq)) (rest a-seq)))
+  (if (empty? a-seq) '()
+      (reduce (fn [acc y] (concat acc (list x) (list y))) (list (first a-seq)) (rest a-seq))))
 
 (my-interpose 0 [1 2 3])               ;=> (1 0 2 0 3)
 (my-interpose "," ["I" "me" "myself"]) ;=> ("I" "," "me" "," "myself")
@@ -50,8 +51,24 @@
 (min-max-element [1 2 3 4])    ;=> [1 4]
 (min-max-element [1])          ;=> [1 1]
 
+
+
+(defn split-into-two [sorted-seq n]
+  (map reverse
+    (reduce (fn [[accf accs] x]
+              (cond
+                (< x n) [(conj accf x) accs]
+                :else [accf (conj accs x)])) ['() '()] sorted-seq)))
+
+(split-into-two (list 1 2 4 5) 3)
+
 (defn insert [sorted-seq n]
-  [:-])
+  (let [[fval sval] (split-into-two sorted-seq n)]
+    (concat fval (list n) sval)))
+
+(insert [] 2)      ;=> (2)
+(insert [1 3 4] 2) ;=> (1 2 3 4)
+(insert [1] 2)     ;=> (1 2)
 
 (defn insertion-sort [a-seq]
   [:-])
@@ -59,17 +76,45 @@
 (defn parity [a-seq]
   [:-])
 
-(defn minus [x]
-  :-)
+(defn minus
+  ([x] (- 0 x))
+  ([x y] (- x y)))
 
-(defn count-params [x]
-  :-)
+(minus 2)   ;=> -2
+(minus 4 3) ;=> 1
 
-(defn my-* [x]
-  :-)
+(defn count-params
+  ([] 0)
+  ([x] 1)
+  ([x & more] (reduce (fn [acc y] (+ acc 1)) 1 more)))
 
-(defn pred-and [x]
-  (fn [x] :-))
+(count-params)            ;=> 0
+(count-params :a)         ;=> 1
+(count-params :a 1 :b :c) ;=> 4
+
+(defn my-*
+  ([] 1)
+  ([x] x)
+  ([x y] (* x y))
+  ([x y & more] (reduce * (* x y) more)))
+
+(my-*)           ;=> 1
+(my-* 4 3)       ;=> 12
+(my-* 1 2 3 4 5) ;=> 120
+
+(defn pred-and
+  ([] (fn [y] true))
+  ([p] (fn [y] (p y)))
+  ([p q] (fn [y] (and (p y) (q y))))
+  ([p q & more] (fn [y]  (reduce (fn [acc pred] (and acc (pred y))) (and (p y) (q y))  more))))
+
+(filter (pred-and) [1 0 -2])                    ;=> (1 0 -2)
+(filter (pred-and pos? odd?) [1 2 -4 0 6 7 -3]) ;=> (1 7)
+(filter (pred-and number? integer? pos? even?)
+        [1 0 -2 :a 7 "a" 2])                    ;=> (0 2)
 
 (defn my-map [f a-seq]
-  [:-])
+  :-)
+(my-map inc [1 2 3 4 5])                  ;=> (2 3 4 5)
+(my-map + [1 1 1] [1 1 1] [1 1 1])      ;=> (3 3 3)
+(my-map vector [1 2 3] [1 2 3] [1 2 3]) ;=> ((1 1 1) (2 2 2) (3 3 3))
