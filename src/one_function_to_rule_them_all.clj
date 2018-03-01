@@ -71,10 +71,20 @@
 (insert [1] 2)     ;=> (1 2)
 
 (defn insertion-sort [a-seq]
-  [:-])
+  (reduce (fn [acc el] (insert acc el)) (list (first a-seq)) (rest a-seq)))
+
+(insertion-sort [2 5 3 1]) ;=> (1 2 3 5)
+(insertion-sort [1 2])     ;=> (1 2)
 
 (defn parity [a-seq]
-  [:-])
+  (let [freq-map (frequencies a-seq)]
+    (set (for [[k v] freq-map
+            :when (odd? v)]
+            k))))
+
+(parity [:a :b :c])    ;=> #{:a :b :c}
+(parity [:a :a :b :b]) ;=> #{}
+(parity [1 2 3 1])     ;=> #{2 3}
 
 (defn minus
   ([x] (- 0 x))
