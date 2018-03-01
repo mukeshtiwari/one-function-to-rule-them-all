@@ -76,6 +76,20 @@
 (insertion-sort [2 5 3 1]) ;=> (1 2 3 5)
 (insertion-sort [1 2])     ;=> (1 2)
 
+(defn count-parity [a-seq]
+  (let [freq-map  (reduce (fn [acc x]
+                            (if (contains? acc x)
+                                (assoc acc x (inc (get acc x)))
+                                (assoc acc x 1))) {} a-seq)]
+    (set (for [[k v] freq-map
+               :when (odd? v)]
+              k))))
+
+(count-parity [:a :a :a :b :b])
+(count-parity [:a :b :c])
+(count-parity [:a :a :b :b])
+(count-parity [1 2 3 1])
+
 (defn parity [a-seq]
   (let [freq-map (frequencies a-seq)]
     (set (for [[k v] freq-map
